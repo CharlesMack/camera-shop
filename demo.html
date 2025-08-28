@@ -69,7 +69,7 @@
       top: 0;
       left: 0;
       right: 0;
-      padding: env(safe-area-inset-top, 12px) 30px 222px;
+      padding: env(safe-area-inset-top, 12px) 20px 12px;
       background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 70%, transparent 100%);
       z-index: 20;
       display: flex;
@@ -118,7 +118,7 @@
       appearance: none;
       cursor: pointer;
       min-width: 220px;
-      min-height: 80px;
+      min-height: 100px;
       text-align: center;
     }
 
@@ -373,7 +373,50 @@
       box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
     }
 
-    
+    .demo-link {
+      position: absolute;
+      top: env(safe-area-inset-top, 20px);
+      right: 20px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 15px;
+      padding: 8px 12px;
+      color: var(--fg);
+      text-decoration: none;
+      font-size: 12px;
+      z-index: 25;
+    }
+
+    .camera-flip-btn {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 25;
+    }
+
+    .camera-flip-btn:active {
+      transform: translateY(-50%) scale(0.9);
+      background: rgba(255,255,255,0.2);
+    }
+
+    .video-flipped {
+      transform: scaleX(-1);
+    }
+
     @media (max-height: 600px) {
       .advanced-panel {
         max-height: 50vh;
@@ -403,6 +446,10 @@
     <div class="viewfinder">
       <video id="videoFeed" playsinline autoplay muted></video>
       <canvas id="paint"></canvas>
+      
+      <button class="camera-flip-btn" id="cameraFlipBtn" title="Switch Camera">
+        🔄
+      </button>
     </div>
 
     <div class="top-overlay">
@@ -510,6 +557,8 @@
       const shutterValue = document.getElementById('shutterValue');
       const wbValue = document.getElementById('wbValue');
 
+      const cameraFlipBtn = document.getElementById('cameraFlipBtn');
+
       let stream = null;
       let rafId = null;
       let mediaRecorder = null;
@@ -519,6 +568,9 @@
       let recordStartTime = null;
       let timerInterval = null;
       let isControlsOpen = false;
+      let currentFacingMode = 'environment'; // 'user' for front, 'environment' for back
+      let availableCameras = [];
+      let currentCameraIndex = 0;
 
       const cameraProfiles = {
         Zen: {
@@ -802,18 +854,36 @@
 
       async function initializeCamera() {
         try {
+          // First, get available cameras
+          await getAvailableCameras();
+          
           const constraints = {
             video: {
-              facingMode: 'environment',
+              facingMode: currentFacingMode,
               width: { ideal: 1920 },
               height: { ideal: 1080 }
             }
           };
           
+          // If we have specific camera devices, use deviceId instead of facingMode
+          if (availableCameras.length > 0 && availableCameras[currentCameraIndex]) {
+            delete constraints.video.facingMode;
+            constraints.video.deviceId = { exact: availableCameras[currentCameraIndex].deviceId };
+          }
+          
           stream = await navigator.mediaDevices.getUserMedia(constraints);
           videoFeed.srcObject = stream;
           
           await videoFeed.play();
+          
+          // Apply flip effect ONLY for front camera (selfie)
+          if (currentFacingMode === 'user') {
+            videoFeed.classList.add('video-flipped');
+            paint.classList.add('video-flipped');
+          } else {
+            videoFeed.classList.remove('video-flipped');
+            paint.classList.remove('video-flipped');
+          }
           
           // Setup canvas
           const rect = videoFeed.getBoundingClientRect();
@@ -833,6 +903,13 @@
           // Hide init screen
           initScreen.classList.add('hidden');
           
+          // Show flip button only if multiple cameras available
+          if (availableCameras.length > 1) {
+            cameraFlipBtn.style.display = 'flex';
+          } else {
+            cameraFlipBtn.style.display = 'none';
+          }
+          
           // Start processing loop
           processVideo();
           
@@ -840,6 +917,117 @@
           console.error('Camera access failed:', error);
           alert('Camera access failed. Please check permissions and try again.');
         }
+      }
+
+      async function getAvailableCameras() {
+        try {
+          const devices = await navigator.mediaDevices.enumerateDevices();
+          availableCameras = devices.filter(device => device.kind === 'videoinput');
+          console.log('Available cameras:', availableCameras);
+        } catch (error) {
+          console.error('Error getting camera devices:', error);
+          availableCameras = [];
+        }
+      }
+
+      async function flipCamera() {
+        if (availableCameras.length < 2) {
+          console.log('Only one camera available');
+          return;
+        }
+
+        // Stop current stream
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+          cancelAnimationFrame(rafId);
+        }
+
+        // Cycle through available cameras
+        currentCameraIndex = (currentCameraIndex + 1) % availableCameras.length;
+        
+        // Update facing mode based on camera label (heuristic)
+        const currentCamera = availableCameras[currentCameraIndex];
+        if (currentCamera.label.toLowerCase().includes('back') || 
+            currentCamera.label.toLowerCase().includes('environment') ||
+            currentCamera.label.toLowerCase().includes('rear')) {
+          currentFacingMode = 'environment';
+        } else {
+          currentFacingMode = 'user';
+        }
+
+        // Visual feedback
+        cameraFlipBtn.style.transform = 'translateY(-50%) rotate(180deg) scale(0.8)';
+        
+        try {
+          const constraints = {
+            video: {
+              deviceId: { exact: currentCamera.deviceId },
+              width: { ideal: 1920 },
+              height: { ideal: 1080 }
+            }
+          };
+          
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+          videoFeed.srcObject = stream;
+          await videoFeed.play();
+          
+          // Apply flip effect for front camera
+          if (currentFacingMode === 'user') {
+            videoFeed.classList.add('video-flipped');
+            paint.classList.add('video-flipped');
+          } else {
+            videoFeed.classList.remove('video-flipped');
+            paint.classList.remove('video-flipped');
+          }
+          
+          // Update canvas dimensions
+          paint.width = videoFeed.videoWidth;
+          paint.height = videoFeed.videoHeight;
+          
+          // Resume processing
+          processVideo();
+          
+        } catch (error) {
+          console.error('Camera flip failed:', error);
+          
+          // Fallback: try with facingMode
+          try {
+            currentFacingMode = currentFacingMode === 'user' ? 'environment' : 'user';
+            const fallbackConstraints = {
+              video: {
+                facingMode: currentFacingMode,
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+              }
+            };
+            
+            stream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
+            videoFeed.srcObject = stream;
+            await videoFeed.play();
+            
+            // Apply flip effect ONLY for front camera (selfie)
+            if (currentFacingMode === 'user') {
+              videoFeed.classList.add('video-flipped');
+              paint.classList.add('video-flipped');
+            } else {
+              videoFeed.classList.remove('video-flipped');
+              paint.classList.remove('video-flipped');
+            }
+            
+            paint.width = videoFeed.videoWidth;
+            paint.height = videoFeed.videoHeight;
+            processVideo();
+            
+          } catch (fallbackError) {
+            console.error('Camera flip fallback failed:', fallbackError);
+            alert('Failed to switch camera. Please try again.');
+          }
+        }
+        
+        // Reset button animation
+        setTimeout(() => {
+          cameraFlipBtn.style.transform = 'translateY(-50%) rotate(0deg) scale(1)';
+        }, 300);
       }
 
       function processVideo() {
@@ -940,12 +1128,20 @@
         tempCanvas.height = paint.height;
         const tempCtx = tempCanvas.getContext('2d');
         
-        // Copy processed image
-        tempCtx.drawImage(paint, 0, 0);
+        // For front camera (selfie), save the mirrored version as people expect
+        // For back camera, save normally (no flip)
+        if (currentFacingMode === 'user') {
+          // Keep the selfie mirrored in the final capture
+          tempCtx.drawImage(paint, 0, 0);
+        } else {
+          // Back camera - save normally
+          tempCtx.drawImage(paint, 0, 0);
+        }
         
         // Download
         const link = document.createElement('a');
-        link.download = `${cameraSelect.value}_${Date.now()}.png`;
+        const cameraType = currentFacingMode === 'user' ? 'selfie' : 'back';
+        link.download = `${cameraSelect.value}_${cameraType}_${Date.now()}.png`;
         link.href = tempCanvas.toDataURL('image/png');
         link.click();
         
@@ -1051,6 +1247,7 @@
       downloadBtn.addEventListener('click', downloadLastRecording);
       expandBtn.addEventListener('click', toggleControls);
       panelHandle.addEventListener('click', toggleControls);
+      cameraFlipBtn.addEventListener('click', flipCamera);
 
       // Camera controls
       cameraSelect.addEventListener('change', updateCameraSettings);
