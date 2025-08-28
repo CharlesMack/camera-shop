@@ -1128,18 +1128,20 @@
         tempCanvas.height = paint.height;
         const tempCtx = tempCanvas.getContext('2d');
         
-        // Handle flipped cameras - flip the capture back to normal orientation
+        // For front camera (selfie), save the mirrored version as people expect
+        // For back camera, save normally (no flip)
         if (currentFacingMode === 'user') {
-          tempCtx.scale(-1, 1);
-          tempCtx.translate(-tempCanvas.width, 0);
+          // Keep the selfie mirrored in the final capture
+          tempCtx.drawImage(paint, 0, 0);
+        } else {
+          // Back camera - save normally
+          tempCtx.drawImage(paint, 0, 0);
         }
-        
-        // Copy processed image
-        tempCtx.drawImage(paint, 0, 0);
         
         // Download
         const link = document.createElement('a');
-        link.download = `${cameraSelect.value}_${currentFacingMode}_${Date.now()}.png`;
+        const cameraType = currentFacingMode === 'user' ? 'selfie' : 'back';
+        link.download = `${cameraSelect.value}_${cameraType}_${Date.now()}.png`;
         link.href = tempCanvas.toDataURL('image/png');
         link.click();
         
@@ -1298,4 +1300,3 @@
   </script>
 </body>
 </html>
-        
