@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>P.O.P.S. Camera Shop - Camera Demo Experience</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .camera-card { transition: transform 0.3s ease; }
+    .camera-card:hover { transform: scale(1.05); }
+    .filter-btn.active { background-color: #1e40af; color: white; }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <header class="bg-blue-900 text-white py-6 text-center">
+    <h1 class="text-4xl font-bold">P.O.P.S. Camera Shop</h1>
+    <p class="mt-2 text-lg">Discover Your Perfect Camera with Our Interactive Demos</p>
+  </header>
+
+  <main class="max-w-7xl mx-auto py-8 px-4">
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">Filter Cameras</h2>
+      <div class="flex flex-wrap gap-4">
+        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="all">All</button>
+        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="beginner">Beginner</button>
+        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="enthusiast">Enthusiast</button>
+        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="professional">Professional</button>
+        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="action">Action</button>
+        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="creative">Creative</button>
+      </div>
+    </section>
+
+    <section id="camera-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Camera cards will be populated by JavaScript -->
+    </section>
+  </main>
+
+  <footer class="bg-blue-900 text-white py-6 text-center">
+    <p>&copy; 2025 P.O.P.S. Camera Shop. Explore, Create, Capture.</p>
+  </footer>
+
+  <script>
+    const cameras = [
+      {
+        name: "Frameforge",
+        description: "A versatile mirrorless camera for dynamic storytelling with exceptional image quality.",
+        highlights: [
+          "24MP full-frame sensor for stunning clarity",
+          "4K video with advanced stabilization",
+          "Compact, ergonomic design for on-the-go shooting"
+        ],
+        demoLink: "https://charlesmack.github.io/forge",
+        category: "enthusiast"
+      },
+      {
+        name: "PopShot",
+        description: "The go-to point-and-shoot for vibrant, spontaneous captures.",
+        highlights: [
+          "20MP sensor with vivid color reproduction",
+          "5x optical zoom for versatile framing",
+          "Pocket-sized design for effortless portability"
+        ],
+        demoLink: "https://charlesmack.github.io/popshot",
+        category: "beginner"
+      },
+      {
+        name: "Omni",
+        description: "Redefines all-purpose photography with hybrid design for stills and video.",
+        highlights: [
+          "30MP sensor with dual-pixel autofocus",
+          "6K video recording with cinematic depth",
+          "Weather-sealed body for rugged environments"
+        ],
+        demoLink: "https://charlesmack.github.io/omni",
+        category: "enthusiast"
+      },
+      {
+        name: "Spectra",
+        description: "Built for low-light enthusiasts, delivering clarity in challenging conditions.",
+        highlights: [
+          "High-sensitivity 26MP sensor",
+          "ISO range up to 102,400 for low-light excellence",
+          "Built-in ND filters for creative control"
+        ],
+        demoLink: "https://charlesmack.github.io/spectra",
+        category: "enthusiast"
+      },
+      {
+        name: "Maestro",
+        description: "The professional’s choice for cinematic video with unmatched resolution.",
+        highlights: [
+          "8K video with Log recording",
+          "45MP sensor for detailed stills",
+          "Modular design for customizable accessories"
+        ],
+        demoLink: "https://charlesmack.github.io/maestro",
+        category: "professional"
+      },
+      {
+        name: "Stinger",
+        description: "A compact action camera for capturing fast-paced moments.",
+        highlights: [
+          "12MP sensor with 4K 60fps video",
+          "Waterproof up to 10m without housing",
+          "Ultra-wide lens for immersive perspectives"
+        ],
+        demoLink: "https://charlesmack.github.io/stinger",
+        category: "action"
+      },
+      {
+        name: "Zen",
+        description: "Minimalist camera for purists focusing on simplicity and precision.",
+        highlights: [
+          "18MP APS-C sensor for balanced performance",
+          "Manual controls for tactile shooting",
+          "Lightweight, retro-inspired design"
+        ],
+        demoLink: "https://charlesmack.github.io/zen",
+        category: "creative"
+      },
+      {
+        name: "Peel",
+        description: "Blends instant photography with modern tech for unique prints.",
+        highlights: [
+          "Hybrid instant-digital capture system",
+          "16MP sensor with Bluetooth connectivity",
+          "Prints photos in seconds with customizable filters"
+        ],
+        demoLink: "https://charlesmack.github.io/peel",
+        category: "creative"
+      },
+      {
+        name: "Merk2",
+        description: "Upgraded compact camera for street photographers with speed and discretion.",
+        highlights: [
+          "22MP sensor with rapid autofocus",
+          "Silent shutter for candid moments",
+          "Tilting LCD for creative angles"
+        ],
+        demoLink: "https://charlesmack.github.io/merk2",
+        category: "enthusiast"
+      },
+      {
+        name: "Merk",
+        description: "Original street shooter for quick, high-quality urban captures.",
+        highlights: [
+          "20MP sensor with fast burst mode",
+          "Fixed 28mm prime lens for sharp imagery",
+          "Ultra-light body for all-day shooting"
+        ],
+        demoLink: "https://charlesmack.github.io/merk",
+        category: "enthusiast"
+      },
+      {
+        name: "Snapframe",
+        description: "Beginner-friendly DSLR balancing ease with professional features.",
+        highlights: [
+          "24MP sensor with guided shooting modes",
+          "1080p video with built-in tutorials",
+          "Interchangeable lens system for growth"
+        ],
+        demoLink: "https://charlesmack.github.io/snapframe",
+        category: "beginner"
+      },
+      {
+        name: "Merk-Create",
+        description: "Tailored for content creators with seamless social platform integration.",
+        highlights: [
+          "26MP sensor with vlog-optimized autofocus",
+          "4K live-streaming capabilities",
+          "Articulating touchscreen for selfies and vlogs"
+        ],
+        demoLink: "https://charlesmack.github.io/merk-create",
+        category: "creative"
+      },
+      {
+        name: "Parade",
+        description: "Vibrant camera for event photography, capturing lively moments with flair.",
+        highlights: [
+          "20MP sensor with enhanced color science",
+          "High-speed flash sync for dynamic lighting",
+          "Durable design for all-night events"
+        ],
+        demoLink: "https://charlesmack.github.io/parade",
+        category: "creative"
+      },
+      {
+        name: "Jazz",
+        description: "Playful, artistic camera with creative filters for experimental shooters.",
+        highlights: [
+          "18MP sensor with in-camera effects",
+          "4K video with time-lapse and stop-motion modes",
+          "Retro styling with modern functionality"
+        ],
+        demoLink: "https://charlesmack.github.io/jazz",
+        category: "creative"
+      },
+      {
+        name: "Camera XL Lite",
+        description: "Lightweight, entry-level mirrorless for beginners seeking quality.",
+        highlights: [
+          "16MP sensor with simple controls",
+          "1080p video for casual shooting",
+          "Affordable price for first-time buyers"
+        ],
+        demoLink: "https://charlesmack.github.io/cameraxl/lite.html",
+        category: "beginner"
+      },
+      {
+        name: "Camera XL Medium",
+        description: "Bridges beginner and enthusiast with enhanced features.",
+        highlights: [
+          "24MP sensor with improved low-light performance",
+          "4K video with basic stabilization",
+          "Compact design with lens compatibility"
+        ],
+        demoLink: "https://charlesmack.github.io/cameraxl/medium.html",
+        category: "enthusiast"
+      },
+      {
+        name: "Camera XL",
+        description: "Robust mirrorless for enthusiasts with pro-level performance.",
+        highlights: [
+          "30MP sensor with advanced autofocus",
+          "6K video with in-body stabilization",
+          "Weather-resistant build for outdoor shoots"
+        ],
+        demoLink: "https://charlesmack.github.io/cameraxl",
+        category: "enthusiast"
+      },
+      {
+        name: "Camera Pro",
+        description: "Ultimate tool for professionals with cutting-edge technology.",
+        highlights: [
+          "50MP full-frame sensor for unmatched detail",
+          "8K video with professional-grade codecs",
+          "Dual card slots for reliable storage"
+        ],
+        demoLink: "https://github.com/CharlesMack/camerapro",
+        category: "professional"
+      },
+      {
+        name: "CameraPanel",
+        description: "Modular camera system for experimental creators with full customization.",
+        highlights: [
+          "20MP sensor with interchangeable modules",
+          "Supports custom lenses and accessories",
+          "Open-source platform for DIY enthusiasts"
+        ],
+        demoLink: "https://charlesmack.github.io/camerapanel",
+        category: "creative"
+      }
+    ];
+
+    function populateCameras(filter = 'all') {
+      const grid = document.getElementById('camera-grid');
+      grid.innerHTML = '';
+      cameras.forEach(camera => {
+        if (filter === 'all' || camera.category === filter) {
+          const card = document.createElement('div');
+          card.className = 'camera-card bg-white p-6 rounded-lg shadow-md';
+          card.innerHTML = `
+            <h3 class="text-xl font-bold mb-2">${camera.name}</h3>
+            <p class="text-gray-600 mb-4">${camera.description}</p>
+            <ul class="list-disc list-inside mb-4">
+              ${camera.highlights.map(h => `<li>${h}</li>`).join('')}
+            </ul>
+            <a href="${camera.demoLink}" target="_blank" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Try Demo</a>
+          `;
+          grid.appendChild(card);
+        }
+      });
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        populateCameras(button.dataset.filter);
+      });
+    });
+
+    populateCameras();
+  </script>
+</body>
+</html>
