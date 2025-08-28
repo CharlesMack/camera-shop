@@ -3,284 +3,500 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P.O.P.S. Camera Shop - Camera Demo Experience</title>
+  <title>P.O.P.S. Camera Superstore - Walk In & Explore</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    .camera-card { transition: transform 0.3s ease; }
-    .camera-card:hover { transform: scale(1.05); }
-    .filter-btn.active { background-color: #1e40af; color: white; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .camera-display { 
+      transition: all 0.4s ease;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    }
+    .camera-display:hover { 
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+    }
+    .shelf-lighting {
+      background: linear-gradient(90deg, rgba(59,130,246,0.1) 0%, rgba(147,51,234,0.1) 50%, rgba(236,72,153,0.1) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+    .store-entrance {
+      background: linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #581c87 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .store-entrance::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      animation: shimmer 4s ease-in-out infinite;
+    }
+    .floating-icon {
+      animation: float 3s ease-in-out infinite;
+    }
+    .demo-highlight {
+      background: linear-gradient(45deg, #ff6b6b, #ffa500, #ff6b6b);
+      background-size: 200% 200%;
+      animation: shimmer 2s ease-in-out infinite;
+    }
+    .category-tag {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .category-tag:hover {
+      transform: scale(1.1);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .welcome-text {
+      animation: slideIn 1s ease-out;
+    }
+    .counter-display {
+      background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+      border-radius: 15px;
+      position: relative;
+    }
+    .counter-display::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6);
+      background-size: 400% 400%;
+      border-radius: 15px;
+      z-index: -1;
+      animation: shimmer 3s ease infinite;
+    }
   </style>
 </head>
-<body class="bg-gray-100 font-sans">
-  <header class="bg-blue-900 text-white py-6 text-center">
-    <h1 class="text-4xl font-bold">P.O.P.S. Camera Shop</h1>
-    <p class="mt-2 text-lg">Discover Your Perfect Camera with Our Interactive Demos</p>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 min-h-screen font-sans">
+  <!-- Store Entrance Header -->
+  <header class="store-entrance text-white py-12 text-center relative">
+    <div class="max-w-7xl mx-auto px-4">
+      <h1 class="text-6xl font-bold mb-4 welcome-text">🏪 Welcome to P.O.P.S. Camera Superstore</h1>
+      <p class="text-2xl mb-6 welcome-text opacity-90">Step Inside Our Amazing Camera Wonderland</p>
+      <div class="flex justify-center items-center gap-4 text-lg">
+        <span class="floating-icon">📸</span>
+        <span>Try Any Camera • Keep As Long As You Need • Open Door Policy</span>
+        <span class="floating-icon">🎯</span>
+      </div>
+    </div>
   </header>
 
-  <main class="max-w-7xl mx-auto py-8 px-4">
-    <section class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4">Filter Cameras</h2>
-      <div class="flex flex-wrap gap-4">
-        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="all">All</button>
-        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="beginner">Beginner</button>
-        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="enthusiast">Enthusiast</button>
-        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="professional">Professional</button>
-        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="action">Action</button>
-        <button class="filter-btn px-4 py-2 bg-gray-200 rounded-md" data-filter="creative">Creative</button>
+  <!-- Store Navigation & Atmosphere -->
+  <div class="bg-gradient-to-r from-blue-600 to-purple-600 py-4">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-wrap justify-center gap-4">
+        <span class="category-tag bg-white/90 px-4 py-2 rounded-full text-blue-800 font-semibold" data-filter="all">
+          🏬 Browse All Displays
+        </span>
+        <span class="category-tag bg-white/90 px-4 py-2 rounded-full text-green-800 font-semibold" data-filter="beginner">
+          🌱 Beginner Corner
+        </span>
+        <span class="category-tag bg-white/90 px-4 py-2 rounded-full text-orange-800 font-semibold" data-filter="enthusiast">
+          🔥 Enthusiast Zone
+        </span>
+        <span class="category-tag bg-white/90 px-4 py-2 rounded-full text-purple-800 font-semibold" data-filter="professional">
+          💎 Pro Counter
+        </span>
+        <span class="category-tag bg-white/90 px-4 py-2 rounded-full text-red-800 font-semibold" data-filter="action">
+          ⚡ Action Alley
+        </span>
+        <span class="category-tag bg-white/90 px-4 py-2 rounded-full text-pink-800 font-semibold" data-filter="creative">
+          🎨 Creative Studio
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Store Floor & Demo Showcase -->
+  <main class="max-w-7xl mx-auto py-12 px-4">
+    <!-- Special Demo Highlight -->
+    <section class="mb-12 text-center">
+      <div class="counter-display p-8 text-white mb-8">
+        <h2 class="text-4xl font-bold mb-4">🎯 Try Our Mobile Camera Demo Experience!</h2>
+        <p class="text-xl mb-6">Test drive cameras right on your device - just like in our store!</p>
+        <a href="https://charlesmack.github.io/camera-shop/demo.html" target="_blank" 
+           class="demo-highlight inline-block px-8 py-4 rounded-full text-white font-bold text-xl transform hover:scale-105 transition-all duration-300 shadow-2xl">
+          🚀 Launch Mobile Demo Experience
+        </a>
       </div>
     </section>
 
-    <section id="camera-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Camera cards will be populated by JavaScript -->
+    <!-- Store Atmosphere Text -->
+    <section class="mb-12 text-center bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
+      <h2 class="text-3xl font-bold mb-4 text-gray-800">🎪 Your Camera Playground Awaits</h2>
+      <p class="text-lg text-gray-600 max-w-4xl mx-auto leading-relaxed">
+        Welcome to our camera superstore where every camera is a story waiting to be told! 
+        Browse our interactive displays, pick up any camera that catches your eye, and take it for a test drive. 
+        No rush, no pressure - keep them as long as you need to find your perfect match. 
+        Come back anytime to try our latest drops and discover which camera speaks to you!
+      </p>
+    </section>
+
+    <!-- Camera Display Shelves -->
+    <section class="shelf-lighting rounded-3xl p-8 mb-8">
+      <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">
+        📱 Interactive Camera Displays
+      </h2>
+      <div id="camera-displays" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Camera displays will be populated by JavaScript -->
+      </div>
+    </section>
+
+    <!-- Store Policies -->
+    <section class="bg-gradient-to-r from-green-100 to-blue-100 rounded-2xl p-8 text-center">
+      <h2 class="text-2xl font-bold mb-6 text-gray-800">🏪 Our Store Promise</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white/80 rounded-xl p-6">
+          <div class="text-4xl mb-3">🔄</div>
+          <h3 class="font-bold text-lg mb-2">Try Before You Buy</h3>
+          <p class="text-gray-600">Test any camera as long as you need</p>
+        </div>
+        <div class="bg-white/80 rounded-xl p-6">
+          <div class="text-4xl mb-3">🚪</div>
+          <h3 class="font-bold text-lg mb-2">Open Door Policy</h3>
+          <p class="text-gray-600">Come back anytime, browse freely</p>
+        </div>
+        <div class="bg-white/80 rounded-xl p-6">
+          <div class="text-4xl mb-3">⭐</div>
+          <h3 class="font-bold text-lg mb-2">Latest Drops</h3>
+          <p class="text-gray-600">Always featuring the newest cameras</p>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer class="bg-blue-900 text-white py-6 text-center">
-    <p>&copy; 2025 P.O.P.S. Camera Shop. Explore, Create, Capture.</p>
+  <footer class="bg-gradient-to-r from-gray-800 to-gray-900 text-white py-8 text-center">
+    <p class="text-lg">&copy; 2025 P.O.P.S. Camera Superstore</p>
+    <p class="mt-2 text-gray-400">Where Every Shot Tells a Story 📸 ✨</p>
   </footer>
 
   <script>
     const cameras = [
       {
         name: "Frameforge",
-        description: "A versatile mirrorless camera for dynamic storytelling with exceptional image quality.",
+        description: "Dynamic storytelling companion with cinema-quality results",
         highlights: [
-          "24MP full-frame sensor for stunning clarity",
-          "4K video with advanced stabilization",
-          "Compact, ergonomic design for on-the-go shooting"
+          "🎬 24MP full-frame sensor for movie-like clarity",
+          "📹 4K video with pro stabilization",
+          "🎒 Travel-ready ergonomic design"
         ],
         demoLink: "https://charlesmack.github.io/forge",
-        category: "enthusiast"
+        category: "enthusiast",
+        emoji: "🎭",
+        specialty: "Storyteller's Choice"
       },
       {
         name: "PopShot",
-        description: "The go-to point-and-shoot for vibrant, spontaneous captures.",
+        description: "Your pocket-sized creativity unleashed in vibrant colors",
         highlights: [
-          "20MP sensor with vivid color reproduction",
-          "5x optical zoom for versatile framing",
-          "Pocket-sized design for effortless portability"
+          "🌈 20MP sensor with explosive color pop",
+          "🔍 5x optical zoom for perfect framing",
+          "👜 Fits anywhere, shoots everywhere"
         ],
         demoLink: "https://charlesmack.github.io/popshot",
-        category: "beginner"
+        category: "beginner",
+        emoji: "💥",
+        specialty: "Instant Joy"
       },
       {
         name: "Omni",
-        description: "Redefines all-purpose photography with hybrid design for stills and video.",
+        description: "The shapeshifter that adapts to any creative vision",
         highlights: [
-          "30MP sensor with dual-pixel autofocus",
-          "6K video recording with cinematic depth",
-          "Weather-sealed body for rugged environments"
+          "🎯 30MP sensor with lightning autofocus",
+          "🎥 6K video with cinematic depth magic",
+          "⛈️ Weather-proof for any adventure"
         ],
         demoLink: "https://charlesmack.github.io/omni",
-        category: "enthusiast"
+        category: "enthusiast",
+        emoji: "🔄",
+        specialty: "All-Rounder"
       },
       {
         name: "Spectra",
-        description: "Built for low-light enthusiasts, delivering clarity in challenging conditions.",
+        description: "Night vision mastery for the darkness explorers",
         highlights: [
-          "High-sensitivity 26MP sensor",
-          "ISO range up to 102,400 for low-light excellence",
-          "Built-in ND filters for creative control"
+          "🌙 26MP low-light sensor excellence",
+          "🦉 ISO up to 102,400 for owl-vision",
+          "🎛️ Built-in ND filters for creative control"
         ],
         demoLink: "https://charlesmack.github.io/spectra",
-        category: "enthusiast"
+        category: "enthusiast",
+        emoji: "🌃",
+        specialty: "Night Hunter"
       },
       {
         name: "Maestro",
-        description: "The professional’s choice for cinematic video with unmatched resolution.",
+        description: "The conductor's baton for cinematic masterpieces",
         highlights: [
-          "8K video with Log recording",
-          "45MP sensor for detailed stills",
-          "Modular design for customizable accessories"
+          "🎪 8K video with Hollywood-grade recording",
+          "💎 45MP sensor for gallery-worthy stills",
+          "🔧 Modular design for unlimited creativity"
         ],
         demoLink: "https://charlesmack.github.io/maestro",
-        category: "professional"
+        category: "professional",
+        emoji: "🎼",
+        specialty: "Cinema Master"
       },
       {
         name: "Stinger",
-        description: "A compact action camera for capturing fast-paced moments.",
+        description: "Adrenaline-fueled action capture machine",
         highlights: [
-          "12MP sensor with 4K 60fps video",
-          "Waterproof up to 10m without housing",
-          "Ultra-wide lens for immersive perspectives"
+          "⚡ 12MP sensor with 4K 60fps lightning",
+          "🏊‍♂️ Waterproof to 10m without housing",
+          "👁️ Ultra-wide lens for immersive thrills"
         ],
         demoLink: "https://charlesmack.github.io/stinger",
-        category: "action"
+        category: "action",
+        emoji: "🐝",
+        specialty: "Action Hero"
       },
       {
         name: "Zen",
-        description: "Minimalist camera for purists focusing on simplicity and precision.",
+        description: "Minimalist meditation in photography form",
         highlights: [
-          "18MP APS-C sensor for balanced performance",
-          "Manual controls for tactile shooting",
-          "Lightweight, retro-inspired design"
+          "🧘 18MP APS-C sensor for balanced harmony",
+          "👋 Manual controls for mindful shooting",
+          "🕊️ Featherweight retro-inspired design"
         ],
         demoLink: "https://charlesmack.github.io/zen",
-        category: "creative"
+        category: "creative",
+        emoji: "☯️",
+        specialty: "Mindful Creation"
       },
       {
         name: "Peel",
-        description: "Blends instant photography with modern tech for unique prints.",
+        description: "Time machine that prints memories instantly",
         highlights: [
-          "Hybrid instant-digital capture system",
-          "16MP sensor with Bluetooth connectivity",
-          "Prints photos in seconds with customizable filters"
+          "⚡ Instant-digital hybrid magic system",
+          "📱 16MP sensor with Bluetooth wizardry",
+          "🖨️ Prints memories in seconds with filters"
         ],
         demoLink: "https://charlesmack.github.io/peel",
-        category: "creative"
+        category: "creative",
+        emoji: "🍊",
+        specialty: "Memory Maker"
       },
       {
         name: "Merk2",
-        description: "Upgraded compact camera for street photographers with speed and discretion.",
+        description: "Street photography ninja with upgraded stealth",
         highlights: [
-          "22MP sensor with rapid autofocus",
-          "Silent shutter for candid moments",
-          "Tilting LCD for creative angles"
+          "🏃‍♂️ 22MP sensor with ninja-fast autofocus",
+          "🤫 Silent shutter for candid moments",
+          "📐 Tilting LCD for creative perspectives"
         ],
         demoLink: "https://charlesmack.github.io/merk2",
-        category: "enthusiast"
+        category: "enthusiast",
+        emoji: "🥷",
+        specialty: "Street Ninja v2"
       },
       {
         name: "Merk",
-        description: "Original street shooter for quick, high-quality urban captures.",
+        description: "Original street legend for urban exploration",
         highlights: [
-          "20MP sensor with fast burst mode",
-          "Fixed 28mm prime lens for sharp imagery",
-          "Ultra-light body for all-day shooting"
+          "🏙️ 20MP sensor with rapid-fire burst",
+          "🎯 Fixed 28mm prime for razor sharpness",
+          "🪶 Ultra-light for marathon shooting"
         ],
         demoLink: "https://charlesmack.github.io/merk",
-        category: "enthusiast"
+        category: "enthusiast",
+        emoji: "🏘️",
+        specialty: "Street Legend"
       },
       {
         name: "Snapframe",
-        description: "Beginner-friendly DSLR balancing ease with professional features.",
+        description: "Your friendly guide into the world of photography",
         highlights: [
-          "24MP sensor with guided shooting modes",
-          "1080p video with built-in tutorials",
-          "Interchangeable lens system for growth"
+          "🎓 24MP sensor with learning modes",
+          "📚 1080p video with built-in tutorials",
+          "🔄 Lens system that grows with you"
         ],
         demoLink: "https://charlesmack.github.io/snapframe",
-        category: "beginner"
+        category: "beginner",
+        emoji: "🌱",
+        specialty: "Learning Companion"
       },
       {
         name: "Merk-Create",
-        description: "Tailored for content creators with seamless social platform integration.",
+        description: "Content creator's dream with social superpowers",
         highlights: [
-          "26MP sensor with vlog-optimized autofocus",
-          "4K live-streaming capabilities",
-          "Articulating touchscreen for selfies and vlogs"
+          "📺 26MP sensor with vlog-optimized focus",
+          "📡 4K live-streaming for instant sharing",
+          "🤳 Flip screen perfect for selfies and vlogs"
         ],
         demoLink: "https://charlesmack.github.io/merk-create",
-        category: "creative"
+        category: "creative",
+        emoji: "🎬",
+        specialty: "Creator's Choice"
       },
       {
         name: "Parade",
-        description: "Vibrant camera for event photography, capturing lively moments with flair.",
+        description: "Party photographer's best friend with endless energy",
         highlights: [
-          "20MP sensor with enhanced color science",
-          "High-speed flash sync for dynamic lighting",
-          "Durable design for all-night events"
+          "🎉 20MP sensor with party-enhanced colors",
+          "💥 High-speed flash for dynamic lighting",
+          "🌙 All-night durability for endless events"
         ],
         demoLink: "https://charlesmack.github.io/parade",
-        category: "creative"
+        category: "creative",
+        emoji: "🎊",
+        specialty: "Party Starter"
       },
       {
         name: "Jazz",
-        description: "Playful, artistic camera with creative filters for experimental shooters.",
+        description: "Playful artist's toolkit with endless creative possibilities",
         highlights: [
-          "18MP sensor with in-camera effects",
-          "4K video with time-lapse and stop-motion modes",
-          "Retro styling with modern functionality"
+          "🎨 18MP sensor with artistic in-camera magic",
+          "⏰ 4K video with time-lapse and stop-motion",
+          "🎷 Vintage style meets modern innovation"
         ],
         demoLink: "https://charlesmack.github.io/jazz",
-        category: "creative"
+        category: "creative",
+        emoji: "🎷",
+        specialty: "Creative Groove"
       },
       {
         name: "Camera XL Lite",
-        description: "Lightweight, entry-level mirrorless for beginners seeking quality.",
+        description: "Your first step into mirrorless magic",
         highlights: [
-          "16MP sensor with simple controls",
-          "1080p video for casual shooting",
-          "Affordable price for first-time buyers"
+          "✨ 16MP sensor with beginner-friendly controls",
+          "🎥 1080p video for casual memories",
+          "💰 Wallet-friendly entry into quality"
         ],
         demoLink: "https://charlesmack.github.io/cameraxl/lite.html",
-        category: "beginner"
+        category: "beginner",
+        emoji: "🌟",
+        specialty: "First Step"
       },
       {
         name: "Camera XL Medium",
-        description: "Bridges beginner and enthusiast with enhanced features.",
+        description: "The perfect bridge between learning and mastering",
         highlights: [
-          "24MP sensor with improved low-light performance",
-          "4K video with basic stabilization",
-          "Compact design with lens compatibility"
+          "🌙 24MP sensor with improved night vision",
+          "📹 4K video with gentle stabilization",
+          "🎯 Compact design with growing lens options"
         ],
         demoLink: "https://charlesmack.github.io/cameraxl/medium.html",
-        category: "enthusiast"
+        category: "enthusiast",
+        emoji: "🌉",
+        specialty: "Growth Partner"
       },
       {
         name: "Camera XL",
-        description: "Robust mirrorless for enthusiasts with pro-level performance.",
+        description: "Robust performer for serious photo adventures",
         highlights: [
-          "30MP sensor with advanced autofocus",
-          "6K video with in-body stabilization",
-          "Weather-resistant build for outdoor shoots"
+          "💪 30MP sensor with advanced focusing",
+          "🎥 6K video with rock-steady stabilization",
+          "⛈️ Weather-resistant outdoor companion"
         ],
         demoLink: "https://charlesmack.github.io/cameraxl",
-        category: "enthusiast"
+        category: "enthusiast",
+        emoji: "🏔️",
+        specialty: "Adventure Ready"
       },
       {
         name: "Camera Pro",
-        description: "Ultimate tool for professionals with cutting-edge technology.",
+        description: "The ultimate weapon for professional creators",
         highlights: [
-          "50MP full-frame sensor for unmatched detail",
-          "8K video with professional-grade codecs",
-          "Dual card slots for reliable storage"
+          "👑 50MP full-frame sensor for maximum detail",
+          "🎬 8K video with professional codecs",
+          "💾 Dual card slots for bulletproof backup"
         ],
-        demoLink: "https://github.com/CharlesMack/camerapro",
-        category: "professional"
+        demoLink: "https://charlesmack.github.io/camerapro",
+        category: "professional",
+        emoji: "👑",
+        specialty: "Pro Standard"
       },
       {
         name: "CameraPanel",
-        description: "Modular camera system for experimental creators with full customization.",
+        description: "Mad scientist's modular experiment station",
         highlights: [
-          "20MP sensor with interchangeable modules",
-          "Supports custom lenses and accessories",
-          "Open-source platform for DIY enthusiasts"
+          "🔬 20MP sensor with swappable modules",
+          "🔧 Custom lenses and wild accessories",
+          "💻 Open-source playground for inventors"
         ],
         demoLink: "https://charlesmack.github.io/camerapanel",
-        category: "creative"
+        category: "creative",
+        emoji: "🧪",
+        specialty: "DIY Dream"
       }
     ];
 
-    function populateCameras(filter = 'all') {
-      const grid = document.getElementById('camera-grid');
-      grid.innerHTML = '';
-      cameras.forEach(camera => {
-        if (filter === 'all' || camera.category === filter) {
-          const card = document.createElement('div');
-          card.className = 'camera-card bg-white p-6 rounded-lg shadow-md';
-          card.innerHTML = `
-            <h3 class="text-xl font-bold mb-2">${camera.name}</h3>
-            <p class="text-gray-600 mb-4">${camera.description}</p>
-            <ul class="list-disc list-inside mb-4">
-              ${camera.highlights.map(h => `<li>${h}</li>`).join('')}
-            </ul>
-            <a href="${camera.demoLink}" target="_blank" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Try Demo</a>
-          `;
-          grid.appendChild(card);
-        }
+    function createCameraDisplay(camera) {
+      return `
+        <div class="camera-display p-6 rounded-2xl shadow-lg transform hover:shadow-2xl transition-all duration-300 cursor-pointer border-2 border-transparent hover:border-blue-200" data-category="${camera.category}">
+          <div class="flex items-center justify-between mb-4">
+            <div class="text-4xl">${camera.emoji}</div>
+            <span class="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+              ${camera.specialty}
+            </span>
+          </div>
+          <h3 class="text-2xl font-bold mb-2 text-gray-800">${camera.name}</h3>
+          <p class="text-gray-600 mb-4 leading-relaxed">${camera.description}</p>
+          <ul class="space-y-2 mb-6">
+            ${camera.highlights.map(h => `<li class="text-sm text-gray-700">${h}</li>`).join('')}
+          </ul>
+          <a href="${camera.demoLink}" target="_blank" 
+             class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-xl font-bold text-center block hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg">
+            🎮 Try This Camera Demo
+          </a>
+        </div>
+      `;
+    }
+
+    function displayCameras(filter = 'all') {
+      const container = document.getElementById('camera-displays');
+      const filteredCameras = filter === 'all' ? cameras : cameras.filter(cam => cam.category === filter);
+      
+      container.innerHTML = filteredCameras.map(createCameraDisplay).join('');
+      
+      // Add staggered animation
+      const displays = container.querySelectorAll('.camera-display');
+      displays.forEach((display, index) => {
+        display.style.opacity = '0';
+        display.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+          display.style.transition = 'all 0.6s ease';
+          display.style.opacity = '1';
+          display.style.transform = 'translateY(0)';
+        }, index * 100);
       });
     }
 
-    document.querySelectorAll('.filter-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        populateCameras(button.dataset.filter);
+    // Category filter functionality
+    document.querySelectorAll('.category-tag').forEach(tag => {
+      tag.addEventListener('click', () => {
+        document.querySelectorAll('.category-tag').forEach(t => {
+          t.classList.remove('bg-blue-600', 'text-white');
+          t.classList.add('bg-white/90', 'text-blue-800');
+        });
+        tag.classList.remove('bg-white/90', 'text-blue-800');
+        tag.classList.add('bg-blue-600', 'text-white');
+        
+        displayCameras(tag.dataset.filter);
       });
     });
 
-    populateCameras();
+    // Initialize display
+    displayCameras();
   </script>
 </body>
 </html>
