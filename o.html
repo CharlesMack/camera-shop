@@ -876,7 +876,7 @@
           
           await videoFeed.play();
           
-          // Apply flip effect for front camera
+          // Apply flip effect ONLY for front camera (selfie)
           if (currentFacingMode === 'user') {
             videoFeed.classList.add('video-flipped');
             paint.classList.add('video-flipped');
@@ -947,12 +947,12 @@
         
         // Update facing mode based on camera label (heuristic)
         const currentCamera = availableCameras[currentCameraIndex];
-        if (currentCamera.label.toLowerCase().includes('front') || 
-            currentCamera.label.toLowerCase().includes('user') ||
-            currentCamera.label.toLowerCase().includes('facing')) {
-          currentFacingMode = 'user';
-        } else {
+        if (currentCamera.label.toLowerCase().includes('back') || 
+            currentCamera.label.toLowerCase().includes('environment') ||
+            currentCamera.label.toLowerCase().includes('rear')) {
           currentFacingMode = 'environment';
+        } else {
+          currentFacingMode = 'user';
         }
 
         // Visual feedback
@@ -1005,7 +1005,7 @@
             videoFeed.srcObject = stream;
             await videoFeed.play();
             
-            // Apply flip effect
+            // Apply flip effect ONLY for front camera (selfie)
             if (currentFacingMode === 'user') {
               videoFeed.classList.add('video-flipped');
               paint.classList.add('video-flipped');
